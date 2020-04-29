@@ -8,6 +8,14 @@ import sqlite3
 import config
 
 
+app = Flask(__name__)
+CORS(app)
+
+app.config['BASIC_AUTH_USERNAME'] = config.AUTH_USERNAME
+app.config['BASIC_AUTH_PASSWORD'] = config.AUTH_PASSWORD
+basic_auth = BasicAuth(app)
+
+
 @contextmanager
 def get_db():
 	try:
@@ -19,7 +27,7 @@ def get_db():
 
 
 @contextmanager
-def get_cursor(, commit=False): 
+def get_cursor(commit=False): 
 	with get_db() as db:
 		cur = db.cursor()
 		try: 
@@ -28,35 +36,6 @@ def get_cursor(, commit=False):
 				db.commit()
 		finally: 
 			cur.close()
-
-
-def setup_db():
-	with get_cursor(commit=True) as cur:
-		try:
-			cur.execute("""create table if not exists triggers(
-			id SERIAL PRIMARY KEY,
-			cookies varchar,
-			url varchar,
-			localStorage varchar,
-			sessionStorage varchar,
-			html varchar,
-			canvas varchar,
-			useragent varchar,
-			IP varchar,
-			time timestamp,
-			extra varchar
-			);""")
-		except:
-			pass
-
-
-app = Flask(__name__)
-CORS(app)
-
-app.config['BASIC_AUTH_USERNAME'] = config.AUTH_USERNAME
-app.config['BASIC_AUTH_PASSWORD'] = config.AUTH_PASSWORD
-basic_auth = BasicAuth(app)
-setup_db()	
 
 
 @app.route('/')

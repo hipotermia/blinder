@@ -2,4 +2,3 @@ Flask
 gunicorn
 flask-cors
 Flask-BasicAuth
-sqlite3
