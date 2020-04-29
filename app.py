@@ -87,8 +87,8 @@ def get_triggers():
 def get_trigger(id):
 	with get_cursor() as cur:
 		cur.execute("SELECT * FROM triggers where id = ?", (id,))
-		triggers = cur.fetch()
-	return jsonify(triggers)
+		triggers = cur.fetchall()
+	return jsonify(triggers[0])
 
 
 @app.route('/triggers/<id>', methods=['DELETE'])
