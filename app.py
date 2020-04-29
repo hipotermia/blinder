@@ -16,6 +16,13 @@ app.config['BASIC_AUTH_PASSWORD'] = config.AUTH_PASSWORD
 basic_auth = BasicAuth(app)
 
 
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
+
+
 @contextmanager
 def get_db():
 	try:
@@ -53,7 +60,7 @@ def pwned():
 	data["IP"] = request.remote_addr
 	data["time"] = datetime.now()
 	with get_cursor(commit=True) as cur:
-		cur.execute("INSERT INTO triggers (cookies,url,localStorage,sessionStorage,html,canvas,useragent,IP,time,extra) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (data["cookies"], data["url"], data["localStorage"], data["sessionStorage"], data["html"], data["canvas"], data["useragent"], data["IP"], data["time"], data["extra"]))
+		cur.execute("INSERT INTO triggers (cookies,url,localStorage,sessionStorage,html,canvas,useragent,IP,time,extra) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (data["cookies"], data["url"], data["localStorage"], data["sessionStorage"], data["html"], data["canvas"], data["useragent"], data["IP"], data["time"], data["extra"]))
 	return 'ok'
 
 
@@ -61,8 +68,17 @@ def pwned():
 @basic_auth.required
 def get_triggers():
 	with get_cursor() as cur:
-		cur.execute("SELECT * FROM triggers order by time desc")
+		cur.execute("SELECT id,time,extra,url,ip FROM triggers order by time desc")
 		triggers = cur.fetchall()
+	return jsonify(triggers)
+
+
+@app.route('/triggers/<id>', methods=['GET'])
+@basic_auth.required
+def get_trigger(id):
+	with get_cursor() as cur:
+		cur.execute("SELECT * FROM triggers where id = ?", (id,))
+		triggers = cur.fetch()
 	return jsonify(triggers)
 
 
@@ -70,7 +86,7 @@ def get_triggers():
 @basic_auth.required
 def delete_trigger(id):
 	with get_cursor(commit=True) as cur:
-		cur.execute("DELETE FROM triggers WHERE ID = %s", (id,))
+		cur.execute("DELETE FROM triggers WHERE id = ?", (id,))
 	return 'ok'
 
 
