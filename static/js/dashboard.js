@@ -29,7 +29,7 @@ var fields = {
 					'<h6>· localStorage:</h6><p>' + shitty_encode(e.localStorage) + '</p>' +
 					'<h6>· sessionStorage:</h6><p>' + shitty_encode(e.sessionStorage) + '</p>' +
 					'</div>' +
-					'<div style="max-height:500px; overflow:auto"><a href="' + shitty_encode(e.canvas) + '" target="_blank"><img class="img-fluid" src="' + e.canvas + '"></a></div>' +
+					'<div style="max-height:500px; overflow:auto"><a href="' + shitty_encode(e.canvas) + '" target="_blank"><img class="img-fluid" src="' + shitty_encode(e.canvas) + '"></a></div>' +
 					'<textarea style="min-height:150px;font-size:11px" class="form-control" readonly>' + shitty_encode(e.html) + '</textarea>';
 					Swal.fire({ width:'85%', html:html });
 					$btn.html('View');
