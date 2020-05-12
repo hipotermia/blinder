@@ -1,3 +1,7 @@
+function shitty_encode(s){
+	return s ? s.replace(/</g,"&lt;").replace(/"/g,"&quot;") : "-";
+}
+
 var fields = {
 	id: { name: 'ID' },
 	time: { 
@@ -16,17 +20,17 @@ var fields = {
 			var $btn = $('<button class="btn btn-sm btn-primary">View</button>').click(function(){
 				$btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
 				$.get('/triggers/' + trigger.id, function(e){
-					var html = '<h5>' + e.url + ' [' + e.time + ']</h5>' +
+					var html = '<h5>' + shitty_encode(e.url) + ' [' + shitty_encode(e.time) + ']</h5>' +
 					'<div style="font-size: 11pt;text-align: left;padding: 0 15%;">' +
-					'<h6>· Extra:</h6><p>' + e.extra + '</p>' +
-					'<h6>· Cookies:</h6><p>' + e.cookies + '</p>' +
-					'<h6>· IP:</h6><p>' + e.ip + '</p>' +
-					'<h6>· User-Agent:</h6><p>' + e.useragent + '</p>' +
-					'<h6>· localStorage:</h6><p>' + e.localStorage + '</p>' +
-					'<h6>· sessionStorage:</h6><p>' + e.sessionStorage + '</p>' +
+					'<h6>· Extra:</h6><p>' + shitty_encode(e.extra) + '</p>' +
+					'<h6>· Cookies:</h6><p>' + shitty_encode(e.cookies) + '</p>' +
+					'<h6>· IP:</h6><p>' + shitty_encode(e.ip) + '</p>' +
+					'<h6>· User-Agent:</h6><p>' + shitty_encode(e.useragent) + '</p>' +
+					'<h6>· localStorage:</h6><p>' + shitty_encode(e.localStorage) + '</p>' +
+					'<h6>· sessionStorage:</h6><p>' + shitty_encode(e.sessionStorage) + '</p>' +
 					'</div>' +
-					'<div style="max-height:500px; overflow:auto"><a href="' + e.canvas + '" target="_blank"><img class="img-fluid" src="' + e.canvas + '"></a></div>' +
-					'<textarea style="min-height:150px;font-size:11px" class="form-control" readonly>' + e.html + '</textarea>';
+					'<div style="max-height:500px; overflow:auto"><a href="' + shitty_encode(e.canvas) + '" target="_blank"><img class="img-fluid" src="' + e.canvas + '"></a></div>' +
+					'<textarea style="min-height:150px;font-size:11px" class="form-control" readonly>' + shitty_encode(e.html) + '</textarea>';
 					Swal.fire({ width:'85%', html:html });
 					$btn.html('View');
 				});
