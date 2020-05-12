@@ -7,8 +7,7 @@ var fields = {
 	time: { 
 		name: 'Time (GMT)',
 		special: function(trigger){
-			var d = new Date(Date.parse(trigger.time));
-			return d.toISOString().replace('T','<br>').split('.')[0];
+			return trigger.time.split('.')[0].replace(' ', '<br>');
 		}
 	},
 	extra: { name: 'Extra' },
@@ -20,17 +19,19 @@ var fields = {
 			var $btn = $('<button class="btn btn-sm btn-primary">View</button>').click(function(){
 				$btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
 				$.get('/triggers/' + trigger.id, function(e){
-					var html = '<h5>' + shitty_encode(e.url) + ' [' + shitty_encode(e.time) + ']</h5>' +
-					'<div style="font-size: 11pt;text-align: left;padding: 0 15%;">' +
-					'<h6>· Extra:</h6><p>' + shitty_encode(e.extra) + '</p>' +
-					'<h6>· Cookies:</h6><p>' + shitty_encode(e.cookies) + '</p>' +
-					'<h6>· IP:</h6><p>' + shitty_encode(e.ip) + '</p>' +
-					'<h6>· User-Agent:</h6><p>' + shitty_encode(e.useragent) + '</p>' +
-					'<h6>· localStorage:</h6><p>' + shitty_encode(e.localStorage) + '</p>' +
-					'<h6>· sessionStorage:</h6><p>' + shitty_encode(e.sessionStorage) + '</p>' +
+					var html = '<div class="detail">' +
+					'<h5>' + shitty_encode(e.url) + ' <span class="date">[' + shitty_encode(e.time).split('.')[0] + ']</span></h5>' +
+					'<div class="data">' +
+					'<h6>Extra:</h6><p>' + shitty_encode(e.extra) + '</p>' +
+					'<h6>Cookies:</h6><p>' + shitty_encode(e.cookies) + '</p>' +
+					'<h6>IP:</h6><p>' + shitty_encode(e.ip) + '</p>' +
+					'<h6>User-Agent:</h6><p>' + shitty_encode(e.useragent) + '</p>' +
+					'<h6>localStorage:</h6><p>' + shitty_encode(e.localStorage) + '</p>' +
+					'<h6>sessionStorage:</h6><p>' + shitty_encode(e.sessionStorage) + '</p>' +
 					'</div>' +
-					'<div style="max-height:500px; overflow:auto"><a href="' + shitty_encode(e.canvas) + '" target="_blank"><img class="img-fluid" src="' + shitty_encode(e.canvas) + '"></a></div>' +
-					'<textarea style="min-height:150px;font-size:11px" class="form-control" readonly>' + shitty_encode(e.html) + '</textarea>';
+					'<div class="screenshot"><a href="' + shitty_encode(e.canvas) + '" target="_blank"><img class="img-fluid" src="' + shitty_encode(e.canvas) + '"></a></div>' +
+					'<textarea class="form-control" readonly>' + shitty_encode(e.html) + '</textarea>'+
+					'</div>';
 					Swal.fire({ width:'85%', html:html });
 					$btn.html('View');
 				});
