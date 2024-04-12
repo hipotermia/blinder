@@ -64,7 +64,10 @@ def home():
 @app.route('/pwned', methods=['POST'])
 def pwned():
 	data = request.json
-	data["useragent"] = request.headers.get('User-Agent')
+	if 'User-Agent' in request.headers:
+		data["useragent"] = request.headers.get('User-Agent')
+	else:
+		data["useragent"] = 'none'
 	data["IP"] = request.remote_addr
 	data["time"] = datetime.now()
 	with get_cursor(commit=True) as cur:
